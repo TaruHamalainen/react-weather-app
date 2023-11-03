@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Weather from "./Weather";
+import Form from "./Form";
 
 export default function WeatherApp() {
   const [weather, setWeather] = useState({ data: {}, error: false });
@@ -7,49 +9,57 @@ export default function WeatherApp() {
   const [input, setInput] = useState("");
   const apikey = "f586b9cca2ff00e7eeb936c809e342fa";
 
-  // Get user coordinates
+  // Getting users current location
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        setCoordinates({ latitude, longitude });
-      }),
-        (error) => {
-          console.error("Error getting user location:", error);
-        };
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
+    getLocation();
   }, []);
 
-  //
-  const handleUseCurrentLocation = async (event) => {
-    event.preventDefault();
-    const url = "https://api.openweathermap.org/data/2.5/weather";
+  // fetching data from API
+  useEffect(() => {
+    fetchData();
+  }, [coordinates]);
 
-    await axios
-      .get(url, {
+  // Getting current location
+  const getLocation = async () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const { latitude, longitude } = pos.coords;
+        if (latitude && longitude) setCoordinates({ latitude, longitude });
+      }),
+        (error) => {
+          console.log("Error getting user location: ", error);
+        };
+    } else {
+      console.log("Geolocation is not supported by this browser");
+    }
+  };
+
+  // Fetching data from API
+  const fetchData = async () => {
+    const url = "https://api.openweathermap.org/data/2.5/weather";
+    try {
+      let res = await axios.get(url, {
         params: {
           lat: coordinates.latitude,
           lon: coordinates.longitude,
           units: "metric",
           appid: apikey,
         },
-      })
-      .then((res) => {
-        setWeather({ data: res.data, error: false });
-        setInput("");
-      })
-      .catch((error) => {
-        setWeather({ ...weather, error: true });
-        setInput("");
       });
+      setWeather({ data: res.data, error: false });
+    } catch (error) {
+      console.log(error);
+      setWeather({ ...weather, error: true });
+    }
   };
 
-  const handleSubmit = async (event) => {
+  const onInputChange = (value) => {
+    setInput(value);
+  };
+
+  const onSubmit = async (event) => {
     event.preventDefault();
     const url = "https://api.openweathermap.org/data/2.5/weather";
-
     await axios
       .get(url, {
         params: {
@@ -63,41 +73,16 @@ export default function WeatherApp() {
         setInput("");
       })
       .catch((error) => {
-        setWeather({ ...weather, error: true });
+        setWeather({ data: null, error: true });
         setInput("");
       });
   };
 
   return (
-    <div className=" container mx-auto  py-14 ">
-      <div className="max-w-lg flex flex-col gap-4 mx-auto p-3  bg-slate-200">
-        <button
-          onClick={handleUseCurrentLocation}
-          className="bg-slate-500 p-3 rounded-lg self-center"
-        >
-          Get my location
-        </button>
-        <form onSubmit={handleSubmit} className="bg-slate-50 flex  ">
-          <input
-            className="w-full"
-            type="text"
-            placeholder="search city"
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-          />
-          <button className="self-center bg-slate-300 p-3">Go</button>
-        </form>
-
-        {weather.data && (
-          <div>
-            <h1>{weather.data.name}</h1>
-          </div>
-        )}
-        {weather.data.error && (
-          <div>
-            <p>Not found</p>
-          </div>
-        )}
+    <div className="container max-w-sm mx-auto  py-14 ">
+      <div className="bg-slate-50 flex flex-col gap-5 rounded-lg p-6 shadow-lg ">
+        <Form input={input} onInputChange={onInputChange} onSubmit={onSubmit} />
+        <Weather weather={weather} onCurrentLocation={fetchData} />
       </div>
     </div>
   );
