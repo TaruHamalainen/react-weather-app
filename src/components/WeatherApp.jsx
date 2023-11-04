@@ -43,8 +43,6 @@ export default function WeatherApp() {
     }
   };
 
-  console.log("jee");
-
   // Fetching data from API
   const fetchData = async () => {
     const url = "https://api.openweathermap.org/data/2.5/weather";
@@ -102,7 +100,11 @@ export default function WeatherApp() {
           onSubmit={onSubmit}
           location={coordinates}
         />
-        <Weather weather={weather} onCurrentLocation={fetchData} />
+        <Weather
+          weather={weather}
+          onCurrentLocation={fetchData}
+          location={coordinates}
+        />
       </div>
     </div>
   );
