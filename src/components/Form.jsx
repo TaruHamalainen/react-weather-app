@@ -8,9 +8,11 @@ export default function Form({ input, onInputChange, onSubmit }) {
         value={input}
         onChange={(event) => onInputChange(event.target.value)}
       />
-      <button className="bg-indigo-800 p-3 rounded-lg text-white font-bold">
-        Search
-      </button>
+      {navigator.geolocation && (
+        <button className="bg-indigo-800 p-2 rounded-lg text-white font-bold">
+          Search
+        </button>
+      )}
     </form>
   );
 }

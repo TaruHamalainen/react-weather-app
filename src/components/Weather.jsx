@@ -2,15 +2,15 @@ export default function Weather({ weather, onCurrentLocation }) {
   const getDate = () => {
     const date = new Date();
     const day = date.getDate();
-    const month = date.getMonth();
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
     return `Today ${day}.${month}.${year} `;
   };
   return (
-    <div className="  ">
+    <div>
       {weather.data && weather.data.sys && (
-        <div className="bg-slate-50 flex flex-col gap-5 rounded-lg p-6 shadow-lg ">
+        <div className=" flex flex-col gap-5 rounded-lg p-6  ">
           <div className="flex flex-col gap-2">
             <p className="text-center font-extralight text-xl">{getDate()}</p>
             <h1 className="text-3xl font-extrabold text-center mb-2">
@@ -53,7 +53,9 @@ export default function Weather({ weather, onCurrentLocation }) {
 
       {weather.error && (
         <div className="flex flex-col items-center gap-3">
-          <p className="text-center">Country or city not found 😔 </p>
+          <p className="text-center font-semibold max-w-[50%]">
+            {weather.message}
+          </p>
           <button
             onClick={onCurrentLocation}
             className="bg-indigo-800 p-3 rounded-lg text-white font-semibold"

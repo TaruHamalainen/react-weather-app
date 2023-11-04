@@ -4,7 +4,11 @@ import Weather from "./Weather";
 import Form from "./Form";
 
 export default function WeatherApp() {
-  const [weather, setWeather] = useState({ data: {}, error: false });
+  const [weather, setWeather] = useState({
+    data: {},
+    error: false,
+    message: null,
+  });
   const [coordinates, setCoordinates] = useState(null);
   const [input, setInput] = useState("");
   const apikey = "f586b9cca2ff00e7eeb936c809e342fa";
@@ -31,6 +35,12 @@ export default function WeatherApp() {
         };
     } else {
       console.log("Geolocation is not supported by this browser");
+      setWeather({
+        ...weather,
+        error: true,
+        message:
+          "Geolocation not supported by this browser, please search country / city or allow geolocation",
+      });
     }
   };
 
@@ -46,7 +56,7 @@ export default function WeatherApp() {
           appid: apikey,
         },
       });
-      setWeather({ data: res.data, error: false });
+      setWeather({ data: res.data, error: false, message: null });
     } catch (error) {
       console.log(error);
       setWeather({ ...weather, error: true });
@@ -69,18 +79,22 @@ export default function WeatherApp() {
         },
       })
       .then((res) => {
-        setWeather({ data: res.data, error: false });
+        setWeather({ data: res.data, error: false, message: null });
         setInput("");
       })
       .catch((error) => {
-        setWeather({ data: null, error: true });
+        setWeather({
+          data: null,
+          error: true,
+          message: "City or country not found 😔, Please try again",
+        });
         setInput("");
       });
   };
 
   return (
     <div className="container max-w-sm mx-auto  py-14 ">
-      <div className="bg-slate-50 flex flex-col gap-5 rounded-lg p-6 shadow-lg ">
+      <div className=" flex flex-col gap-5  p-6 bg-slate-50 shadow-lg rounded-lg ">
         <Form input={input} onInputChange={onInputChange} onSubmit={onSubmit} />
         <Weather weather={weather} onCurrentLocation={fetchData} />
       </div>
