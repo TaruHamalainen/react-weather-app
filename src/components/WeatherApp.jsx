@@ -7,7 +7,8 @@ export default function WeatherApp() {
   const [weather, setWeather] = useState({
     data: {},
     error: false,
-    message: null,
+    message:
+      "Geolocation not supported by this browser, please search country / city or allow geolocation",
   });
   const [coordinates, setCoordinates] = useState(null);
   const [input, setInput] = useState("");
@@ -38,11 +39,11 @@ export default function WeatherApp() {
       setWeather({
         ...weather,
         error: true,
-        message:
-          "Geolocation not supported by this browser, please search country / city or allow geolocation",
       });
     }
   };
+
+  console.log("jee");
 
   // Fetching data from API
   const fetchData = async () => {
@@ -95,7 +96,12 @@ export default function WeatherApp() {
   return (
     <div className="container max-w-sm mx-auto  py-14 ">
       <div className=" flex flex-col gap-5  p-6 bg-slate-50 shadow-lg rounded-lg ">
-        <Form input={input} onInputChange={onInputChange} onSubmit={onSubmit} />
+        <Form
+          input={input}
+          onInputChange={onInputChange}
+          onSubmit={onSubmit}
+          location={coordinates}
+        />
         <Weather weather={weather} onCurrentLocation={fetchData} />
       </div>
     </div>

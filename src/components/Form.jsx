@@ -1,4 +1,4 @@
-export default function Form({ input, onInputChange, onSubmit }) {
+export default function Form({ input, onInputChange, onSubmit, location }) {
   return (
     <form onSubmit={onSubmit} className="self-center flex items-center gap-2">
       <input
@@ -8,11 +8,10 @@ export default function Form({ input, onInputChange, onSubmit }) {
         value={input}
         onChange={(event) => onInputChange(event.target.value)}
       />
-      {navigator.geolocation && (
-        <button className="bg-indigo-800 p-2 rounded-lg text-white font-bold">
-          Search
-        </button>
-      )}
+
+      <button className="bg-indigo-800 p-2 rounded-lg text-white font-bold">
+        Search
+      </button>
     </form>
   );
 }

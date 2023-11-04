@@ -1,4 +1,4 @@
-export default function Weather({ weather, onCurrentLocation }) {
+export default function Weather({ weather, onCurrentLocation, location }) {
   const getDate = () => {
     const date = new Date();
     const day = date.getDate();
@@ -56,12 +56,14 @@ export default function Weather({ weather, onCurrentLocation }) {
           <p className="text-center font-semibold max-w-[50%]">
             {weather.message}
           </p>
-          <button
-            onClick={onCurrentLocation}
-            className="bg-indigo-800 p-3 rounded-lg text-white font-semibold"
-          >
-            Use my current location
-          </button>
+          {location && (
+            <button
+              onClick={onCurrentLocation}
+              className="bg-indigo-800 p-3 rounded-lg text-white font-semibold"
+            >
+              Use my current location
+            </button>
+          )}
         </div>
       )}
     </div>
